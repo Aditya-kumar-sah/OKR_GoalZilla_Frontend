@@ -1,0 +1,11 @@
+# Ignore artifacts
+build
+dist
+node_modules
+
+# Ignore logs
+logs
+
+# Ignore configuration files specific to certain tools
+.eslintrc.js 
+.prettierrc.js
