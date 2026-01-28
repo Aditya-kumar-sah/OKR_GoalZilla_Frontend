@@ -1,30 +1,18 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 const App = () => {
-  const [formData, setFormData] = useState(
-    {
-      objective: "",
-      keyResult: ""
-    }
-  );
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [objective, setObjective] = useState("");
+  const [keyResult, setKeyResult] = useState("");
+
+
+  const handleSubmit = (e:any) => {
+    console.log({ objective, keyResult })
     e.preventDefault();
-
-    console.log("Form submitted:", formData);
-    setFormData({
-      objective: "",
-      keyResult: ""
-    });
+    handleClear();
   }
   const handleClear = () => {
-    setFormData({
-      objective: "",
-      keyResult: ""
-    })
+    setObjective("");
+    setKeyResult("");
   }
 
   return <div className="w-100 h-100 m-auto mt-5  rounded bg-gray-100 shadow-md">
@@ -39,8 +27,8 @@ const App = () => {
             placeholder="Enter Objective"
             required
             className="border w-[70%] h-10 rounded p-2"
-            value={formData.objective}
-            onChange={handleChange} />
+            value={objective}
+            onChange={(e) => setObjective(e.target.value)} />
         </div>
         <div className="flex flex-col w-full  items-center py-2">
           <label className="font-bold ">Key Result</label>
@@ -50,8 +38,8 @@ const App = () => {
             placeholder="Enter Key Result"
             required
             className="border w-[70%] h-10  rounded p-2"
-            value={formData.keyResult}
-            onChange={handleChange} />
+            value={keyResult}
+            onChange={(e) => setKeyResult(e.target.value)} />
         </div>
       </div>
 
