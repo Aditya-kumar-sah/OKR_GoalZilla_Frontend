@@ -8,10 +8,18 @@ const KeyResultsList = () => {
     <>
       {keyResultsList?.map((keyResult, index) => {
         return (
-          <div key={index} className="flex justify-around px-4 py-2">
-            <span>{keyResult.description}</span>
-            <span>{keyResult.progress}</span>
-          </div>
+          <div
+  key={index}
+  className="flex items-center justify-between gap-4 rounded-xl bg-white shadow-sm border border-slate-200 px-5 py-4 mb-4 hover:shadow-md transition-all"
+>
+  <span className="text-slate-800 font-medium text-sm md:text-base flex-1">
+    {keyResult.description}
+  </span>
+
+  <div className="shrink-0 rounded-full bg-blue-100 text-blue-700 font-semibold px-4 py-1 text-sm">
+    {keyResult.progress}
+  </div>
+</div>
         );
       })}
     </>
