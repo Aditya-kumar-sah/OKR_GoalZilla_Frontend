@@ -1,0 +1,136 @@
+{
+  "okr": [
+    {
+      "id": 0,
+      "objective": "Create Project",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Learn React",
+          "isCompleted": false,
+          "progress": "12%"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "objective": "Build Portfolio",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Design UI",
+          "isCompleted": false,
+          "progress": "20%"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "objective": "Learn Backend",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Learn Node.js",
+          "isCompleted": false,
+          "progress": "15%"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "objective": "Improve DSA",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Solve LeetCode problems",
+          "isCompleted": false,
+          "progress": "10%"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "objective": "Build MERN App",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Create REST APIs",
+          "isCompleted": false,
+          "progress": "18%"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "objective": "Learn TypeScript",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Understand Types",
+          "isCompleted": false,
+          "progress": "25%"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "objective": "Prepare for Interviews",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Revise Core CS",
+          "isCompleted": false,
+          "progress": "8%"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "objective": "Contribute to Open Source",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Fix GitHub issues",
+          "isCompleted": false,
+          "progress": "5%"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "objective": "Learn System Design",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Study scalability concepts",
+          "isCompleted": false,
+          "progress": "12%"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "objective": "Build Chat App",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Implement authentication",
+          "isCompleted": false,
+          "progress": "22%"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "objective": "Optimize Projects",
+      "keyResultList": [
+        {
+          "id": 0,
+          "description": "Improve performance",
+          "isCompleted": false,
+          "progress": "14%"
+        }
+      ]
+    }
+  ]
+}

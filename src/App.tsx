@@ -1,8 +1,9 @@
-import OkrForm from "./components/OkrForm.tsx";
+import Home from "./components/Home.tsx";
+
 const App = () => {
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <OkrForm />
+    <div>
+      <Home />;
     </div>
   );
 };
