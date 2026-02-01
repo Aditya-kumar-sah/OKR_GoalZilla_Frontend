@@ -1,11 +1,11 @@
-import Modal from "./Modal.tsx";
-import OkrForm from "./OkrForm.tsx";
 import OkrList from "./OkrList.tsx";
 import type { OkrType } from "../types/okr-types.ts";
 import { useEffect, useState } from "react";
+import Header from "./Header.tsx";
 
 const Home = () => {
   const [okrList, setOkrList] = useState<OkrType[]>([]);
+
   useEffect(() => {
     fetch("http://localhost:3000/okr").then(async (response) => {
       const responseOkrData = await response.json();
@@ -13,12 +13,15 @@ const Home = () => {
       console.log();
     });
   }, []);
+
   return (
-    <div className="w-full">
-      <Modal>
-        <OkrForm />
-      </Modal>
-      <OkrList okrList={okrList} />
+    <div className="w-full h-screen">
+      <div className="w-full">
+        <Header />
+      </div>
+      <div className="w-full p-4">
+        <OkrList okrList={okrList} setOkrList={setOkrList} />
+      </div>
     </div>
   );
 };

@@ -1,53 +1,82 @@
-import { useState } from "react";
-import KeyResultsList from "./KeyResultsList.tsx";
-import * as React from "react";
+import { useContext, useEffect, useState } from "react";
+import React from "react";
 import KeyResultForm from "./KeyResultForm.tsx";
-import KeyResultProvider from "../context/KeyResultProvider.tsx";
+import { v4 as uuidv4 } from "uuid";
+import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
+import type { OkrType } from "../types/okr-types.ts";
 
-const OkrForm = () => {
-  const [objective, setObjective] = useState("");
+const OkrForm = ({ okr }: { okr: OkrType }) => {
+  const [objective, setObjective] = useState(okr.objective);
+  const { keyResultsList, handleKeyResultUpdation } =
+    useContext(KeyResultListContext);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    handleKeyResultUpdation(okr.keyResultList);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      if (!objective) {
+        alert("Objective should be given!");
+        return;
+      }
+
+      if (okr.id) {
+        await fetch(`http://localhost:3000/okr/${okr.id}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            objective,
+            keyResultList: keyResultsList,
+          }),
+        });
+        alert("Form Editted!");
+      } else {
+        await fetch("http://localhost:3000/okr", {
+          method: "POST",
+          body: JSON.stringify({
+            objective,
+            keyResultList: keyResultsList,
+            id: uuidv4(),
+          }),
+        });
+        alert("Form Submitted!");
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
   };
 
   return (
-    <div className="w-full max-w-2xl rounded-2xl  bg-white/70 backdrop-blur-xl shadow-xl border border-slate-200 flex flex-col justify-center py-10 px-8 gap-8">
-      <h2 className="text-center font-extrabold text-3xl text-slate-900 tracking-tight">
+    <div className="w-[70%] flex flex-col items-center justify-center bg-black/50 p-6 rounded-lg border border-gray-100/20 ">
+      <h2 className="w-full text-center text-2xl text-white/40 font-bold">
         OKR Form
       </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col justify-center gap-2"
+        className="flex flex-col gap-4 items-center justify-center w-full"
       >
-        <div className="flex flex-col gap-2 w-full ">
-          <label className="font-semibold text-sm uppercase tracking-wide text-slate-600">
-            Objective
-          </label>
-
+        <div className="w-full flex gap-2 items-center justify-between">
           <input
             type="text"
             name="objective"
-            placeholder="What do you want to achieve?"
-            required
-            className="w-full h-12 rounded-xl bg-slate-50 border border-slate-300 px-4 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all"
+            placeholder="Write Objective?"
+            className="w-full placeholder:text-xl h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
             value={objective}
             onChange={(e) => setObjective(e.target.value)}
           />
+          <div className="flex flex-col gap-2 items-center justify-center w-full">
+            <div className="w-full">
+              <KeyResultForm />
+            </div>
+          </div>
         </div>
-
-        <KeyResultProvider>
-          <>
-            <KeyResultForm />
-            <KeyResultsList />
-          </>
-        </KeyResultProvider>
 
         <div className="w-full flex justify-center ">
           <button
             type="submit"
-            className="w-full max-w-lg cursor-pointer rounded-xl bg-gradient-to-r from-blue-300 to-blue-500 text-white py-3 font-semibold tracking-wide shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+            className="text-xl w-full max-w-lg cursor-pointer rounded-xl bg-linear-to-r bg-gray-950/30 text-white/30  py-3 font-semibold tracking-wide shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
           >
             Submit OKRs
           </button>

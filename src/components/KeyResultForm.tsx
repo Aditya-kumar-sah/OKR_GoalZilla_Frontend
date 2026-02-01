@@ -1,36 +1,34 @@
 import { useContext, useState } from "react";
 import type { KeyResult } from "../types/okr-types.ts";
-import { KeyResultsContext } from "../context/KeyResultProvider.tsx";
+import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
 
 const KeyResultForm = () => {
   const [keyResult, setKeyResult] = useState<KeyResult>({
     description: "",
-    progress: "",
+    progress: 0,
+    id: "",
+    isCompleted: false,
   });
 
-  const { handleKeyResultAddition } = useContext(KeyResultsContext);
+  const { handleKeyResultAddition } = useContext(KeyResultListContext);
+
   function handleAddKeyResult() {
-    if (handleKeyResultAddition(keyResult)) {
-      setKeyResult({
-        description: "",
-        progress: "",
-      });
-    } else {
-      alert("Validation Error");
-    }
+    handleKeyResultAddition(keyResult);
+    setKeyResult({
+      description: "",
+      progress: 0,
+      id: "",
+      isCompleted: false,
+    });
   }
 
   return (
     <div className="flex flex-col w-full items-center py-8 gap-5">
-      <label className="font-bold text-base uppercase tracking-wide text-slate-700">
-        Key Result
-      </label>
-
       <input
         type="text"
         name="description"
-        placeholder="Describe the measurable outcome"
-        className="w-[80%] h-12 rounded-xl bg-slate-50 border border-slate-300 px-4 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all"
+        placeholder="Enter Key"
+        className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
         value={keyResult.description}
         onChange={(e) =>
           setKeyResult({ ...keyResult, [e.target.name]: e.target.value })
@@ -40,8 +38,8 @@ const KeyResultForm = () => {
       <input
         type="text"
         name="progress"
-        placeholder="Progress (e.g. 40%)"
-        className="w-[80%] h-12 rounded-xl bg-slate-50 border border-slate-300 px-4 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all"
+        placeholder="Progress (%)"
+        className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
         value={keyResult.progress}
         onChange={(e) =>
           setKeyResult({ ...keyResult, [e.target.name]: e.target.value })
@@ -51,7 +49,7 @@ const KeyResultForm = () => {
       <button
         onClick={handleAddKeyResult}
         type="button"
-        className=" cursor-pointer rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 font-semibold shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-95 transition-all"
+        className="w-full text-xl focus:text-xl max-w-lg cursor-pointer rounded-xl bg-linear-to-r bg-gray-950/30 text-white/30  py-3 font-semibold tracking-wide shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
       >
         Add Key Result
       </button>
