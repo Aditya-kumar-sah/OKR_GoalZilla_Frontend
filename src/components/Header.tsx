@@ -1,15 +1,40 @@
 import Modal from "./Modal.tsx";
 import OkrForm from "./OkrForm.tsx";
-import KeyResultListProvider from "../context/KeyResultListProvider.tsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import type { KeyResult } from "../types/okr-types.ts";
+import { v4 as uuidv4 } from "uuid";
+import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
 
 const Header = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const { addKeyResultToFormHandler } = useContext(KeyResultListContext);
   const handleOpenAddOkr = () => {
     setIsFormOpen(true);
   };
 
   const handleCloseAddOkr = () => {
+    setIsFormOpen(false);
+    addKeyResultToFormHandler({
+      description: "",
+      id: "",
+      isCompleted: false,
+      progress: 0,
+    });
+  };
+
+  const handleAddOkrSubmit = async (
+    objective: string,
+    keyResultsList: KeyResult[],
+  ) => {
+    await fetch("http://localhost:3000/okr", {
+      method: "POST",
+      body: JSON.stringify({
+        objective,
+        keyResultList: keyResultsList,
+        id: uuidv4(),
+      }),
+    });
+    alert("Form Submitted!");
     setIsFormOpen(false);
   };
   return (
@@ -18,15 +43,16 @@ const Header = () => {
         GoalZilla
       </div>
       <div>
-        <KeyResultListProvider>
-          <Modal
-            isOpen={isFormOpen}
-            handleOpenOkr={handleOpenAddOkr}
-            handleCloseOkr={handleCloseAddOkr}
-          >
-            <OkrForm okr={{ objective: "", keyResultList: [], id: "" }} />
-          </Modal>
-        </KeyResultListProvider>
+        <Modal
+          isOpen={isFormOpen}
+          handleOpenOkr={handleOpenAddOkr}
+          handleCloseOkr={handleCloseAddOkr}
+        >
+          <OkrForm
+            handleSubmit={handleAddOkrSubmit}
+            okr={{ objective: "", keyResultList: [], id: "" }}
+          />
+        </Modal>
       </div>
     </div>
   );

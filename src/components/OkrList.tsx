@@ -1,8 +1,10 @@
 import type { KeyResult, OkrType } from "../types/okr-types.ts";
 import OkrForm from "./OkrForm.tsx";
 import Modal from "./Modal.tsx";
-import { useState } from "react";
-import KeyResultListProvider from "../context/KeyResultListProvider.tsx";
+import { useContext, useState } from "react";
+import KeyResultListProvider, {
+  KeyResultListContext,
+} from "../context/KeyResultListProvider.tsx";
 import { Trash } from "lucide-react";
 
 interface OkrListPropsType {
@@ -12,12 +14,21 @@ interface OkrListPropsType {
 
 const OkrList = ({ okrList, setOkrList }: OkrListPropsType) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const { addKeyResultToFormHandler } = useContext(KeyResultListContext);
+
   const handleOpenAddOkr = () => {
     setIsEditOpen(true);
   };
 
   const handleCloseAddOkr = () => {
     setIsEditOpen(false);
+    addKeyResultToFormHandler({
+      description: "",
+      id: "",
+      isCompleted: false,
+      progress: 0,
+    });
   };
 
   const handleDeleteOkr = async (okrId: string) => {
@@ -26,6 +37,22 @@ const OkrList = ({ okrList, setOkrList }: OkrListPropsType) => {
     await fetch(`http://localhost:3000/okr/${okrId}`, {
       method: "DELETE",
     });
+  };
+
+  const handleEditOkrSubmit = async (
+    objective: string,
+    keyResultsList: KeyResult[],
+    okrId: string,
+  ) => {
+    await fetch(`http://localhost:3000/okr/${okrId}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        objective,
+        keyResultList: keyResultsList,
+      }),
+    });
+    alert("Form Editted!");
+    handleCloseAddOkr();
   };
 
   return (
@@ -52,7 +79,7 @@ const OkrList = ({ okrList, setOkrList }: OkrListPropsType) => {
                     handleOpenOkr={handleOpenAddOkr}
                     handleCloseOkr={handleCloseAddOkr}
                   >
-                    <OkrForm okr={okr} />
+                    <OkrForm handleSubmit={handleEditOkrSubmit} okr={okr} />
                   </Modal>
                 </KeyResultListProvider>
                 <div>

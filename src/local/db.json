@@ -1,22 +1,3 @@
 {
-  "okr": [
-    {
-      "objective": "fddfd",
-      "keyResultList": [
-        {
-          "description": "kmd",
-          "progress": 100,
-          "id": "8b41ed08-11a8-41de-8f91-4d4511d160a2",
-          "isCompleted": true
-        },
-        {
-          "description": "sd",
-          "progress": 100,
-          "id": "2f3dab43-3393-4428-8999-e991f976f04d",
-          "isCompleted": true
-        }
-      ],
-      "id": "c6135fe4-1f22-4e6e-becd-0871ff761242"
-    }
-  ]
+  "okr": []
 }

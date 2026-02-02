@@ -1,25 +1,14 @@
-import { useContext, useState } from "react";
-import type { KeyResult } from "../types/okr-types.ts";
+import { useContext } from "react";
 import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
 
 const KeyResultForm = () => {
-  const [keyResult, setKeyResult] = useState<KeyResult>({
-    description: "",
-    progress: 0,
-    id: "",
-    isCompleted: false,
-  });
+  // const [keyResult, setKeyResult] = useState<KeyResult>(keyResultOld);
 
-  const { handleKeyResultAddition } = useContext(KeyResultListContext);
+  const { handleKeyResultAddition, keyResult, addKeyResultToFormHandler } =
+    useContext(KeyResultListContext);
 
   function handleAddKeyResult() {
     handleKeyResultAddition(keyResult);
-    setKeyResult({
-      description: "",
-      progress: 0,
-      id: "",
-      isCompleted: false,
-    });
   }
 
   return (
@@ -31,7 +20,10 @@ const KeyResultForm = () => {
         className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
         value={keyResult.description}
         onChange={(e) =>
-          setKeyResult({ ...keyResult, [e.target.name]: e.target.value })
+          addKeyResultToFormHandler({
+            ...keyResult,
+            [e.target.name]: e.target.value,
+          })
         }
       />
 
@@ -42,7 +34,10 @@ const KeyResultForm = () => {
         className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
         value={keyResult.progress}
         onChange={(e) =>
-          setKeyResult({ ...keyResult, [e.target.name]: e.target.value })
+          addKeyResultToFormHandler({
+            ...keyResult,
+            [e.target.name]: e.target.value,
+          })
         }
       />
 

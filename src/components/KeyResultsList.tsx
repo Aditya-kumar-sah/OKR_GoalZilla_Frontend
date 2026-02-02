@@ -1,13 +1,18 @@
 import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
 import { useContext } from "react";
-import { Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
+import type { KeyResult } from "../types/okr-types.ts";
 
 const KeyResultsList = () => {
-  const { keyResultsList, handleKeyResultDeletion } =
+  const { keyResultsList, handleKeyResultDeletion, addKeyResultToFormHandler } =
     useContext(KeyResultListContext);
 
   const handleDeleteKeyResult = (id: string) => {
     handleKeyResultDeletion(id);
+  };
+
+  const handleAddKeyResultToForm = (keyResult: KeyResult) => {
+    addKeyResultToFormHandler(keyResult);
   };
 
   return (
@@ -36,6 +41,12 @@ const KeyResultsList = () => {
               onClick={() => handleDeleteKeyResult(keyResult.id)}
             >
               <Trash />
+            </div>
+            <div
+              className="w-[20%] cursor-pointer"
+              onClick={() => handleAddKeyResultToForm(keyResult)}
+            >
+              <Pencil />
             </div>
           </div>
         );

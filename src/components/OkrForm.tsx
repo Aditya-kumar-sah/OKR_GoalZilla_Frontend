@@ -1,51 +1,26 @@
 import { useContext, useEffect, useState } from "react";
-import React from "react";
 import KeyResultForm from "./KeyResultForm.tsx";
-import { v4 as uuidv4 } from "uuid";
 import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
-import type { OkrType } from "../types/okr-types.ts";
+import type { KeyResult, OkrType } from "../types/okr-types.ts";
 
-const OkrForm = ({ okr }: { okr: OkrType }) => {
+const OkrForm = ({
+  okr,
+  handleSubmit,
+}: {
+  okr: OkrType;
+  handleSubmit: (
+    objective: string,
+    keyResultsList: KeyResult[],
+    okrId: string,
+  ) => void;
+}) => {
   const [objective, setObjective] = useState(okr.objective);
-  const { keyResultsList, handleKeyResultUpdation } =
+  const { keyResultsList, keyResult, handleKeyResultUpdation } =
     useContext(KeyResultListContext);
 
   useEffect(() => {
     handleKeyResultUpdation(okr.keyResultList);
   }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (!objective) {
-        alert("Objective should be given!");
-        return;
-      }
-
-      if (okr.id) {
-        await fetch(`http://localhost:3000/okr/${okr.id}`, {
-          method: "PUT",
-          body: JSON.stringify({
-            objective,
-            keyResultList: keyResultsList,
-          }),
-        });
-        alert("Form Editted!");
-      } else {
-        await fetch("http://localhost:3000/okr", {
-          method: "POST",
-          body: JSON.stringify({
-            objective,
-            keyResultList: keyResultsList,
-            id: uuidv4(),
-          }),
-        });
-        alert("Form Submitted!");
-      }
-    } catch (error: any) {
-      console.error(error);
-    }
-  };
 
   return (
     <div className="w-[70%] flex flex-col items-center justify-center bg-black/50 p-6 rounded-lg border border-gray-100/20 ">
@@ -54,7 +29,10 @@ const OkrForm = ({ okr }: { okr: OkrType }) => {
       </h2>
 
       <form
-        onSubmit={handleSubmit}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(objective, keyResultsList, okr.id);
+        }}
         className="flex flex-col gap-4 items-center justify-center w-full"
       >
         <div className="w-full flex gap-2 items-center justify-between">
@@ -68,7 +46,7 @@ const OkrForm = ({ okr }: { okr: OkrType }) => {
           />
           <div className="flex flex-col gap-2 items-center justify-center w-full">
             <div className="w-full">
-              <KeyResultForm />
+              <KeyResultForm keyResultOld={keyResult} />
             </div>
           </div>
         </div>
