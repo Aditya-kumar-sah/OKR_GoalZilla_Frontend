@@ -5,11 +5,13 @@ import { useContext, useState } from "react";
 import { Trash } from "lucide-react";
 import {OkrListContext} from "../context/OkrProvider.tsx";
 import axios from "axios";
+import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
 
 
 
 const OkrList = () => {
   const {okrList,deleteOkr,updateOkr} = useContext(OkrListContext)
+  const {updateKeyResult} = useContext(KeyResultListContext)
 
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -20,6 +22,13 @@ const OkrList = () => {
 
   const handleCloseEditOkr = () => {
     setIsEditOpen(false);
+    updateKeyResult({
+      description: "",
+      id: "",
+      isCompleted: false,
+      progress: 0,
+      objective_id : ""
+    })
   };
 
   const handleDeleteOkr = async (okrId: string) => {
@@ -47,9 +56,9 @@ const OkrList = () => {
 
   return (
     <div className="flex flex-col gap-4 items-center w-full h-[60%] ">
-      {okrList.map((okr, index) => (
+      {okrList.map((okr) => (
         <div
-          key={index}
+          key={okr.id}
           className="w-[50%] flex flex-col items-start gap-2 bg-gray-200 p-2 rounded-md"
         >
           <div className="w-full flex flex-col items-start gap-4">
@@ -107,14 +116,44 @@ const KeyResultList = ({
   keyResultList: KeyResult[];
 }) => {
 
+  const {updateEachOkrWithGivenKeyResultList} = useContext(OkrListContext)
+
+  const handleCheckboxClick = async (keyResult: KeyResult) => {
+    try {
+      let updatedProgress;
+      if(keyResult.isCompleted){
+        updatedProgress = 0;
+      }
+      else{
+        updatedProgress = 100;
+      }
+      const res = await axios.put(`http://localhost:3002/objective/${keyResult.objective_id}/keyResult/${keyResult.id}`,{
+         isCompleted: !keyResult.isCompleted,
+          progress : updatedProgress
+      }) 
+      const updatedKeyResultList = keyResultList.map(currKeyResult => {
+        if(currKeyResult.id === keyResult.id){
+           currKeyResult.isCompleted = res.data.isCompleted;
+           currKeyResult.progress = res.data.progress;  
+        }
+        return currKeyResult;
+      })
+
+      updateEachOkrWithGivenKeyResultList(updatedKeyResultList,keyResult.objective_id);
+
+    } catch (error : any) {
+      alert(error.message)
+    }
+  } 
+
 
   return (
     <div className="w-full  flex flex-col p-2 gap-4 rounded-md items-center justify-center">
-      {keyResultList?.map((keyResult, index) => {
+      {keyResultList?.map((keyResult) => {
         return (
           <div
-            onClick={() => {}}
-            key={index}
+            onClick={(e) => handleCheckboxClick(keyResult)}
+            key={keyResult.id}
             className="flex bg-black/30 cursor-pointer p-3 rounded-2xl items-center gap-4 w-[90%]"
           >
             <input

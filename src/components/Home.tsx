@@ -10,8 +10,12 @@ const Home = () => {
 
   useEffect(() => {
     const fetchAllOkr = async () =>{
-      const res = await axios.get("http://localhost:3002/objective");
-      addOkrList(res.data);
+      try {
+        const res = await axios.get("http://localhost:3002/objective");
+        addOkrList(res.data);
+      } catch (error : any) {
+        alert(error.message);
+      }
     }
     fetchAllOkr();
   }, []);

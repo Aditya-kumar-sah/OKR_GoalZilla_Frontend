@@ -6,13 +6,13 @@ interface OkrContextType {
     okrList : OkrType[];
     updateOkrList : (okr:OkrType) => void;
     addOkrList : (okrList : OkrType[]) => void;
-    deleteOkr : (id:string) => void;
+    deleteOkr : (okrId:string) => void;
     updateOkr : (updatedOkr:{title:string,id:string}) => void;
     updateEachOkrWithGivenKeyResultList : (keyResultList : KeyResult[],objectiveId : string) => void;
 }
 
 export const OkrListContext = createContext<OkrContextType>({
-     okrList : [],
+    okrList : [],
     updateOkrList : () => {},
     addOkrList : () => {},
     deleteOkr : () => {},
@@ -49,9 +49,9 @@ const OkrListProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    const updateEachOkrWithGivenKeyResultList = (keyResultList : KeyResult[],objectiveId:string) =>{
+    const updateEachOkrWithGivenKeyResultList = (keyResultList : KeyResult[],okrId:string) =>{
         setOkrList(okrList.map(currOkr => {
-            if(currOkr.id === objectiveId){
+            if(currOkr.id === okrId){
                 currOkr.keyResult = keyResultList;
             }
             return currOkr;
