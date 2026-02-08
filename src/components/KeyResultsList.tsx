@@ -2,22 +2,33 @@ import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
 import { useContext } from "react";
 import { Pencil, Trash } from "lucide-react";
 import type { KeyResult } from "../types/okr-types.ts";
+import {OkrListContext} from "../context/OkrProvider.tsx";
+import axios from "axios";
 
 const KeyResultsList = () => {
-  const { keyResultsList, handleKeyResultDeletion, addKeyResultToFormHandler } =
-    useContext(KeyResultListContext);
+  const {deleteKeyResultInList,keyResultsList,updateKeyResult} = useContext(KeyResultListContext);
+  const {updateEachOkrWithGivenKeyResultList} = useContext(OkrListContext)
 
-  const handleDeleteKeyResult = (id: string) => {
-    handleKeyResultDeletion(id);
+  const handleDeleteKeyResult = async (keyResult:KeyResult) => {
+     try{
+         const res = await axios.delete(`http://localhost:3002/objective/${keyResult.objective_id}/keyResult/${keyResult.id}`);
+         deleteKeyResultInList({id:res.data.id,objective_id:res.data.objective_id,progress:res.data.progress,description:res.data.description,isCompleted:res.data.isCompleted});
+         updateEachOkrWithGivenKeyResultList(keyResultsList,keyResult.objective_id);
+     }
+     catch(err : any){
+        alert(err.message)
+        console.log(err)
+     }
   };
 
   const handleAddKeyResultToForm = (keyResult: KeyResult) => {
-    addKeyResultToFormHandler(keyResult);
+     updateKeyResult(keyResult);
   };
 
   return (
-    <div className="flex flex-col items-center gap-2 w-full max-h-[600px] justify-start p-6 rounded-lg overflow-y-auto scrollbar-none">
-      {keyResultsList?.map((keyResult) => {
+    
+    <div className="flex flex-col items-center gap-2 w-full justify-start p-6 rounded-lg h-[200px] overflow-y-auto scrollbar-none">
+      {keyResultsList.map((keyResult) => {
         let width = keyResult.progress;
         return (
           <div
@@ -38,7 +49,7 @@ const KeyResultsList = () => {
             </div>
             <div
               className="w-[20%] cursor-pointer"
-              onClick={() => handleDeleteKeyResult(keyResult.id)}
+              onClick={() => handleDeleteKeyResult(keyResult)}
             >
               <Trash />
             </div>

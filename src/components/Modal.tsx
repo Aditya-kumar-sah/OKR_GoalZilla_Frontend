@@ -1,6 +1,5 @@
 import { type ReactNode } from "react";
 import { X } from "lucide-react";
-import KeyResultsList from "./KeyResultsList.tsx";
 interface ModalProps {
   children: ReactNode;
   isOpen: boolean;
@@ -36,11 +35,10 @@ const Modal = ({
         <X />
       </button>
       <div className="w-[70%] h-screen flex items-center justify-center">
-        {children}
+          {children}
       </div>
-      <div className="w-[40%]">
-        <KeyResultsList />
-      </div>
+
+
     </div>
   );
 };

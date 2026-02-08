@@ -3,9 +3,10 @@ export type KeyResult = {
   progress: number;
   id: string;
   isCompleted: boolean;
+  objective_id: string;
 };
 export type OkrType = {
-  objective: string;
-  keyResultList: KeyResult[];
+  title: string;
+  keyResult: KeyResult[];
   id: string;
 };

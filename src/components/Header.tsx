@@ -1,41 +1,34 @@
 import Modal from "./Modal.tsx";
 import OkrForm from "./OkrForm.tsx";
-import { useContext, useState } from "react";
-import type { KeyResult } from "../types/okr-types.ts";
-import { v4 as uuidv4 } from "uuid";
-import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
+import {useContext, useState} from "react"
+import axios from "axios";
+import {OkrListContext} from "../context/OkrProvider.tsx";
 
 const Header = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { addKeyResultToFormHandler } = useContext(KeyResultListContext);
+    const {updateOkr} = useContext(OkrListContext);
   const handleOpenAddOkr = () => {
     setIsFormOpen(true);
   };
 
   const handleCloseAddOkr = () => {
     setIsFormOpen(false);
-    addKeyResultToFormHandler({
-      description: "",
-      id: "",
-      isCompleted: false,
-      progress: 0,
-    });
   };
 
   const handleAddOkrSubmit = async (
-    objective: string,
-    keyResultsList: KeyResult[],
+    objective: string,okrId:string
   ) => {
-    await fetch("http://localhost:3000/okr", {
-      method: "POST",
-      body: JSON.stringify({
-        objective,
-        keyResultList: keyResultsList,
-        id: uuidv4(),
-      }),
-    });
-    alert("Form Submitted!");
-    setIsFormOpen(false);
+
+     try{
+       const res = await axios.post("http://localhost:3002/objective",{
+         title : objective
+       })
+         updateOkr({title : res.data.title,id : res.data.id});
+       alert("Form Submitted!");
+       setIsFormOpen(false);
+     }catch(error : any){
+        alert(error.message);
+     }
   };
   return (
     <div className="w-full py-4 px-2 sticky top-0 right-0 left-0 bg-black/50 flex items-center justify-between">
@@ -50,7 +43,8 @@ const Header = () => {
         >
           <OkrForm
             handleSubmit={handleAddOkrSubmit}
-            okr={{ objective: "", keyResultList: [], id: "" }}
+            isAdd = {true}
+            okr={{ title: "", keyResult: [], id: "" }}
           />
         </Modal>
       </div>

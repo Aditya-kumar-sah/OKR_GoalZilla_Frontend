@@ -1,14 +1,35 @@
-import { useContext } from "react";
+import {useContext, useEffect, useState} from "react";
 import { KeyResultListContext } from "../context/KeyResultListProvider.tsx";
+import type {KeyResult} from "../types/okr-types.ts";
+import axios from "axios";
+import {OkrListContext} from "../context/OkrProvider.tsx";
 
-const KeyResultForm = () => {
-  // const [keyResult, setKeyResult] = useState<KeyResult>(keyResultOld);
+const KeyResultForm = ({okrId} : {okrId : string}) => {
 
-  const { handleKeyResultAddition, keyResult, addKeyResultToFormHandler } =
+  const { handleKeyResultAddition, keyResult,keyResultsList } =
     useContext(KeyResultListContext);
 
-  function handleAddKeyResult() {
-    handleKeyResultAddition(keyResult);
+  const {updateEachOkrWithGivenKeyResultList} = useContext(OkrListContext)
+
+  const [currKeyResult, setCurrKeyResult] = useState<KeyResult>(keyResult);
+
+    useEffect(() => {
+        setCurrKeyResult(keyResult)
+    }, [keyResult]);
+
+  async function handleAddKeyResult() {
+      try{
+          let newCurrKeyResult;
+          if(currKeyResult.id) newCurrKeyResult = await axios.put(`http://localhost:3002/objective/${okrId}/keyResult/${currKeyResult.id}`,{progress:currKeyResult.progress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted});
+          else newCurrKeyResult = await axios.post(`http://localhost:3002/objective/${okrId}/keyResult`,{progress:currKeyResult.progress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted});
+          handleKeyResultAddition(newCurrKeyResult.data);
+          updateEachOkrWithGivenKeyResultList(keyResultsList,okrId)
+          setCurrKeyResult({objective_id:"",id:"",progress:0,description:"",isCompleted:false});
+      }catch(error : any){
+          console.log(error)
+          alert(error.message);
+      }
+
   }
 
   return (
@@ -18,27 +39,18 @@ const KeyResultForm = () => {
         name="description"
         placeholder="Enter Key"
         className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
-        value={keyResult.description}
-        onChange={(e) =>
-          addKeyResultToFormHandler({
-            ...keyResult,
-            [e.target.name]: e.target.value,
-          })
-        }
+        value={currKeyResult.description}
+        onChange={(e) => setCurrKeyResult({...currKeyResult,description:e.target.value})}
+
       />
 
       <input
-        type="text"
+        type="number"
         name="progress"
         placeholder="Progress (%)"
         className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
-        value={keyResult.progress}
-        onChange={(e) =>
-          addKeyResultToFormHandler({
-            ...keyResult,
-            [e.target.name]: e.target.value,
-          })
-        }
+        value={currKeyResult.progress}
+        onChange={(e) => setCurrKeyResult({...currKeyResult,progress:Number(e.target.value)})}
       />
 
       <button

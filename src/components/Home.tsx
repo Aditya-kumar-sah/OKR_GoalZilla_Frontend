@@ -1,18 +1,19 @@
 import OkrList from "./OkrList.tsx";
-import type { OkrType } from "../types/okr-types.ts";
-import { useEffect, useState } from "react";
+import {useContext, useEffect} from "react";
 import Header from "./Header.tsx";
 import KeyResultListProvider from "../context/KeyResultListProvider.tsx";
+import axios from "axios";
+import {OkrListContext} from "../context/OkrProvider.tsx";
 
 const Home = () => {
-  const [okrList, setOkrList] = useState<OkrType[]>([]);
+  const {addOkrList} = useContext(OkrListContext)
 
   useEffect(() => {
-    fetch("http://localhost:3000/okr").then(async (response) => {
-      const responseOkrData = await response.json();
-      setOkrList(responseOkrData);
-      console.log();
-    });
+    const fetchAllOkr = async () =>{
+      const res = await axios.get("http://localhost:3002/objective");
+      addOkrList(res.data);
+    }
+    fetchAllOkr();
   }, []);
 
   return (
@@ -22,7 +23,7 @@ const Home = () => {
           <Header />
         </div>
         <div className="w-full p-4">
-          <OkrList okrList={okrList} setOkrList={setOkrList} />
+          <OkrList/>
         </div>
       </div>
     </KeyResultListProvider>

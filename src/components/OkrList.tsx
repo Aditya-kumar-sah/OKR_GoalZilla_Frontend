@@ -1,58 +1,48 @@
-import type { KeyResult, OkrType } from "../types/okr-types.ts";
+import type { KeyResult} from "../types/okr-types.ts";
 import OkrForm from "./OkrForm.tsx";
 import Modal from "./Modal.tsx";
 import { useContext, useState } from "react";
-import KeyResultListProvider, {
-  KeyResultListContext,
-} from "../context/KeyResultListProvider.tsx";
 import { Trash } from "lucide-react";
+import {OkrListContext} from "../context/OkrProvider.tsx";
+import axios from "axios";
 
-interface OkrListPropsType {
-  okrList: OkrType[];
-  setOkrList: (okrList: OkrType[]) => void;
-}
 
-const OkrList = ({ okrList, setOkrList }: OkrListPropsType) => {
+
+const OkrList = () => {
+  const {okrList,deleteOkr,updateOkr} = useContext(OkrListContext)
+
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  const { addKeyResultToFormHandler } = useContext(KeyResultListContext);
 
-  const handleOpenAddOkr = () => {
+  const handleOpenEditOkr = () => {
     setIsEditOpen(true);
   };
 
-  const handleCloseAddOkr = () => {
+  const handleCloseEditOkr = () => {
     setIsEditOpen(false);
-    addKeyResultToFormHandler({
-      description: "",
-      id: "",
-      isCompleted: false,
-      progress: 0,
-    });
   };
 
   const handleDeleteOkr = async (okrId: string) => {
-    const newOkrList = okrList.filter((okr) => okr.id !== okrId);
-    setOkrList(newOkrList);
-    await fetch(`http://localhost:3000/okr/${okrId}`, {
-      method: "DELETE",
-    });
+     try{
+         const res = await axios.delete(`http://localhost:3002/objective/${okrId}`)
+         deleteOkr(res.data.id);
+     }catch(err:any){
+       alert(err.message)
+     }
   };
 
   const handleEditOkrSubmit = async (
     objective: string,
-    keyResultsList: KeyResult[],
     okrId: string,
   ) => {
-    await fetch(`http://localhost:3000/okr/${okrId}`, {
-      method: "PUT",
-      body: JSON.stringify({
-        objective,
-        keyResultList: keyResultsList,
-      }),
-    });
-    alert("Form Editted!");
-    handleCloseAddOkr();
+    try{
+      const res = await axios.put(`http://localhost:3002/objective/${okrId}`,{title:objective});
+      updateOkr({title : res.data.title,id : res.data.id});
+      handleCloseEditOkr();
+    }catch(err:any){
+      alert(err.message);
+      handleCloseEditOkr();
+    }
   };
 
   return (
@@ -72,16 +62,15 @@ const OkrList = ({ okrList, setOkrList }: OkrListPropsType) => {
             >
               Objective:
               <div className="flex items-center gap-2">
-                <KeyResultListProvider>
+
                   <Modal
                     isOpen={isEditOpen}
                     formButtonName={"Edit Okr"}
-                    handleOpenOkr={handleOpenAddOkr}
-                    handleCloseOkr={handleCloseAddOkr}
+                    handleOpenOkr={handleOpenEditOkr}
+                    handleCloseOkr={handleCloseEditOkr}
                   >
-                    <OkrForm handleSubmit={handleEditOkrSubmit} okr={okr} />
+                    <OkrForm isAdd = {false} handleSubmit={handleEditOkrSubmit} okr={okr} />
                   </Modal>
-                </KeyResultListProvider>
                 <div>
                   <button
                     className="bg-slate-500 rounded-full text-white p-2 cursor-pointer"
@@ -93,7 +82,7 @@ const OkrList = ({ okrList, setOkrList }: OkrListPropsType) => {
               </div>
             </div>
             <div className="text-slate-600  text-2xl text-bold">
-              {okr.objective}
+              {okr.title}
             </div>
           </div>
 
@@ -102,10 +91,7 @@ const OkrList = ({ okrList, setOkrList }: OkrListPropsType) => {
               Key Results:
             </div>
             <KeyResultList
-              keyResultList={okr.keyResultList}
-              setOkrList={setOkrList}
-              okrList={okrList}
-              okrId={okr.id}
+              keyResultList={okr.keyResult}
             />
           </div>
         </div>
@@ -117,46 +103,17 @@ export default OkrList;
 
 const KeyResultList = ({
   keyResultList,
-  setOkrList,
-  okrList,
-  okrId,
 }: {
   keyResultList: KeyResult[];
-  okrList: OkrType[];
-  setOkrList: (okrList: OkrType[]) => void;
-  okrId: string;
 }) => {
-  const handleCheck = async (keyResultId: string, okrId: string) => {
-    const newOkrList = okrList.map((okr) => {
-      if (okr.id === okrId) {
-        const updatedKeyResultList = okr.keyResultList?.map((keyResult) => {
-          if (keyResult.id === keyResultId) {
-            keyResult.isCompleted = !keyResult.isCompleted;
-            if (keyResult.isCompleted) keyResult.progress = 100;
-            else keyResult.progress = 0;
-          }
-          return keyResult;
-        });
-        okr.keyResultList = updatedKeyResultList;
-      }
-      return okr;
-    });
-    setOkrList(newOkrList);
-    const updatedOkr = newOkrList.find((okr) => okr.id === okrId);
 
-    await fetch(`http://localhost:3000/okr/${okrId}`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        keyResultList: updatedOkr?.keyResultList,
-      }),
-    });
-  };
+
   return (
     <div className="w-full  flex flex-col p-2 gap-4 rounded-md items-center justify-center">
       {keyResultList?.map((keyResult, index) => {
         return (
           <div
-            onClick={() => handleCheck(keyResult.id, okrId)}
+            onClick={() => {}}
             key={index}
             className="flex bg-black/30 cursor-pointer p-3 rounded-2xl items-center gap-4 w-[90%]"
           >

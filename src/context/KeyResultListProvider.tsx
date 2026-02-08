@@ -1,25 +1,25 @@
 import { createContext, type ReactElement, useState } from "react";
 import type { KeyResult } from "../types/okr-types.ts";
-import { v4 as uuidv4 } from "uuid";
+
 
 type KeyResultContextDefaultType = {
   keyResultsList: KeyResult[];
   keyResult: KeyResult;
   handleKeyResultAddition: (keyResult: KeyResult) => void;
-  handleKeyResultUpdation: (keyResultList: KeyResult[]) => void;
-  handleKeyResultDeletion: (keyResultId: string) => void;
-  handleKeyResultCheckBox: (keyResultId: string) => void;
-  addKeyResultToFormHandler: (keyResult: KeyResult) => void;
+  updateKeyResultList: (keyResultList: KeyResult[]) => void;
+  deleteKeyResultInList: (keyResult: KeyResult) => void;
+  updateKeyResultInList: (keyResult: KeyResult) => void;
+  updateKeyResult : (keyResult: KeyResult) => void;
 };
 
 export const KeyResultListContext = createContext<KeyResultContextDefaultType>({
   keyResultsList: [],
-  keyResult: { description: "", progress: 0, isCompleted: false, id: "" },
+  keyResult: { description: "", progress: 0, isCompleted: false, id: "" ,objective_id:"" },
   handleKeyResultAddition: () => {},
-  handleKeyResultUpdation: () => {},
-  handleKeyResultDeletion: () => {},
-  handleKeyResultCheckBox: () => {},
-  addKeyResultToFormHandler: () => {},
+  updateKeyResultList : () => {},
+  deleteKeyResultInList : () => {},
+  updateKeyResultInList : () => {},
+  updateKeyResult : () => {}
 });
 
 const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
@@ -29,24 +29,21 @@ const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
     id: "",
     isCompleted: false,
     progress: 0,
+    objective_id:""
   });
 
-  const addKeyResultToFormHandler = (keyResult: KeyResult) => {
-    setKeyResult(keyResult);
-    console.log("reached");
-  };
 
-  const handleKeyResultAddition = (keyResult: KeyResult): void => {
-    if (!keyResult.progress) {
+  const handleKeyResultAddition = (updatedKeyResult: KeyResult): void => {
+    if (!updatedKeyResult.progress) {
       alert("Please Enter progress");
       return;
     }
-    if (!keyResult.description) {
+    if (!updatedKeyResult.description) {
       alert("Please Enter description");
       return;
     }
 
-    if (!(keyResult.progress >= 0 && keyResult.progress <= 100)) {
+    if (!(updatedKeyResult.progress >= 0 && updatedKeyResult.progress <= 100)) {
       alert("Please Enter progress between 0 and 100 percentage");
       return;
     }
@@ -55,16 +52,16 @@ const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
 
     setKeyResultsList(
       keyResultsList.map((keyResultCurr) => {
-        if (keyResultCurr.id === keyResult.id) {
+        if (keyResultCurr.id === updatedKeyResult.id) {
           isDone = true;
-          return keyResult;
+          return updatedKeyResult;
         }
         return keyResultCurr;
       }),
     );
 
     if (!isDone) {
-      setKeyResultsList([...keyResultsList, { ...keyResult, id: uuidv4() }]);
+      setKeyResultsList([...keyResultsList, { ...updatedKeyResult}]);
     }
 
     setKeyResult({
@@ -72,31 +69,28 @@ const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
       id: "",
       isCompleted: false,
       progress: 0,
+      objective_id : ""
     });
   };
 
-  const handleKeyResultDeletion = (keyId: string): void => {
-    const newKeyResultList = keyResultsList.filter((keyResult: KeyResult) => {
-      return keyResult.id !== keyId;
-    });
+  const updateKeyResultList = (keyResultListNew: KeyResult[]) => {
+      setKeyResultsList(keyResultListNew);
+  }
 
-    setKeyResultsList(newKeyResultList);
-  };
-  const handleKeyResultCheckBox = (keyId: string): void => {
-    const newKeyResultList = keyResultsList.map((keyResult: KeyResult) => {
-      if (keyResult.id === keyId) {
-        keyResult.isCompleted = !keyResult.isCompleted;
-      }
+  const updateKeyResultInList = (updatedKeyResult:KeyResult) =>{
+     setKeyResultsList(keyResultsList.map(currKeyResult => {
+            if(currKeyResult.id === updatedKeyResult.id) return updatedKeyResult;
+            return currKeyResult;
+     }))
+  }
 
-      return keyResult;
-    });
+  const deleteKeyResultInList = (deletedKeyResult:KeyResult) =>{
+    setKeyResultsList(keyResultsList.filter(currKeyResult => currKeyResult.id !== deletedKeyResult.id))
+  }
 
-    setKeyResultsList(newKeyResultList);
-  };
-
-  const handleKeyResultUpdation = (keyResultList: KeyResult[]): void => {
-    setKeyResultsList(keyResultList);
-  };
+  const updateKeyResult = (updatedKeyResult : KeyResult) =>{
+     setKeyResult(updatedKeyResult);
+  }
 
   return (
     <KeyResultListContext.Provider
@@ -104,10 +98,10 @@ const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
         keyResultsList,
         keyResult,
         handleKeyResultAddition,
-        handleKeyResultUpdation,
-        handleKeyResultDeletion,
-        handleKeyResultCheckBox,
-        addKeyResultToFormHandler,
+        updateKeyResultList,
+        deleteKeyResultInList,
+        updateKeyResultInList,
+        updateKeyResult
       }}
     >
       {children}
