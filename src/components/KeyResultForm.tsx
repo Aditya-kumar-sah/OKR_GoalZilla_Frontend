@@ -20,11 +20,26 @@ const KeyResultForm = ({okrId} : {okrId : string}) => {
   async function handleAddKeyResult() {
       try{
           let newCurrKeyResult;
-          if(currKeyResult.id) newCurrKeyResult = await axios.put(`http://localhost:3002/objective/${okrId}/keyResult/${currKeyResult.id}`,{progress:currKeyResult.progress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted});
-          else newCurrKeyResult = await axios.post(`http://localhost:3002/objective/${okrId}/keyResult`,{progress:currKeyResult.progress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted});
+          if(currKeyResult.id) newCurrKeyResult = await axios.put(`http://localhost:3002/objective/${okrId}/keyResult/${currKeyResult.id}`,{currentProgress:currKeyResult.currentProgress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted,targetProgress:100,metric:"%"});
+          else newCurrKeyResult = await axios.post(`http://localhost:3002/objective/${okrId}/keyResult`,{currentProgress:currKeyResult.currentProgress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted,targetProgress:100,metric:"%"});
           handleKeyResultAddition(newCurrKeyResult.data);
-          updateEachOkrWithGivenKeyResultList(keyResultsList,okrId)
-          setCurrKeyResult({objective_id:"",id:"",progress:0,description:"",isCompleted:false});
+
+          let updatedKeyResultsList;
+
+          if(currKeyResult.id){
+              updatedKeyResultsList = keyResultsList.map((kr) => {
+                 if(kr.id === newCurrKeyResult.data.id){
+                    return newCurrKeyResult.data;
+                 } 
+                 return kr;
+              })
+          }
+          else{
+              updatedKeyResultsList = [...keyResultsList,newCurrKeyResult.data];
+          }
+
+          updateEachOkrWithGivenKeyResultList(updatedKeyResultsList,okrId)
+          setCurrKeyResult({objectiveId:"",id:"",currentProgress:0,targetProgress:0,metric:"%",description:"",isCompleted:false});
       }catch(error : any){
           console.log(error)
           alert(error.message);
@@ -49,8 +64,8 @@ const KeyResultForm = ({okrId} : {okrId : string}) => {
         name="progress"
         placeholder="Progress (%)"
         className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
-        value={currKeyResult.progress}
-        onChange={(e) => setCurrKeyResult({...currKeyResult,progress:Number(e.target.value)})}
+        value={currKeyResult.currentProgress}
+        onChange={(e) => setCurrKeyResult({...currKeyResult,currentProgress:Number(e.target.value)})}
       />
 
       <button

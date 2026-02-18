@@ -1,9 +1,11 @@
 export type KeyResult = {
   description: string;
-  progress: number;
+  currentProgress: number;
+  targetProgress: number;
+  metric: string;
   id: string;
   isCompleted: boolean;
-  objective_id: string;
+  objectiveId: string;
 };
 export type OkrType = {
   title: string;

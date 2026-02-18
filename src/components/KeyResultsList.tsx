@@ -11,9 +11,11 @@ const KeyResultsList = () => {
 
   const handleDeleteKeyResult = async (keyResult:KeyResult) => {
      try{
-         const res = await axios.delete(`http://localhost:3002/objective/${keyResult.objective_id}/keyResult/${keyResult.id}`);
-         deleteKeyResultInList({id:res.data.id,objective_id:res.data.objective_id,progress:res.data.progress,description:res.data.description,isCompleted:res.data.isCompleted});
-         updateEachOkrWithGivenKeyResultList(keyResultsList,keyResult.objective_id);
+         const res = await axios.delete(`http://localhost:3002/objective/${keyResult.objectiveId}/keyResult/${keyResult.id}`);
+         deleteKeyResultInList({id : res.data.id,objectiveId : res.data.objectiveId,currentProgress:res.data.currentProgress,description:res.data.description,isCompleted:res.data.isCompleted,targetProgress:res.data.targetProgress,metric:res.data.metric});
+
+         let updatedKeyResultsList = keyResultsList.filter((kr) => kr.id !== res.data.id);
+         updateEachOkrWithGivenKeyResultList(updatedKeyResultsList,keyResult.objectiveId);
      }
      catch(err : any){
         alert(err.message)
@@ -29,7 +31,7 @@ const KeyResultsList = () => {
     
     <div className="flex flex-col items-center gap-2 w-full justify-start p-6 rounded-lg h-[200px] overflow-y-auto scrollbar-none">
       {keyResultsList.map((keyResult) => {
-        let width = keyResult.progress;
+        let width = keyResult.currentProgress;
         return (
           <div
             key={keyResult.id}
@@ -44,7 +46,7 @@ const KeyResultsList = () => {
                 style={{ width: `${width}%` }}
                 className={`shrink-0 flex flex-col items-center justify-center rounded-full bg-slate-200/40 text-white font-semibold px-4 py-1 text-sm`}
               >
-                {keyResult.progress}%
+                {keyResult.currentProgress}%
               </div>
             </div>
             <div

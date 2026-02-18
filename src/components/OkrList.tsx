@@ -26,8 +26,10 @@ const OkrList = () => {
       description: "",
       id: "",
       isCompleted: false,
-      progress: 0,
-      objective_id : ""
+      currentProgress: 0,
+      objectiveId : "",
+      targetProgress: 0,
+      metric: ""
     })
   };
 
@@ -125,21 +127,24 @@ const KeyResultList = ({
         updatedProgress = 0;
       }
       else{
-        updatedProgress = 100;
+        updatedProgress = keyResult.targetProgress;
       }
-      const res = await axios.put(`http://localhost:3002/objective/${keyResult.objective_id}/keyResult/${keyResult.id}`,{
+      const res = await axios.put(`http://localhost:3002/objective/${keyResult.objectiveId}/keyResult/${keyResult.id}`,{
+         targetProgress : keyResult.targetProgress,
+          description : keyResult.description,
+          metric : keyResult.metric,
          isCompleted: !keyResult.isCompleted,
-          progress : updatedProgress
+         currentProgress : updatedProgress
       }) 
       const updatedKeyResultList = keyResultList.map(currKeyResult => {
         if(currKeyResult.id === keyResult.id){
            currKeyResult.isCompleted = res.data.isCompleted;
-           currKeyResult.progress = res.data.progress;  
+           currKeyResult.currentProgress = res.data.currentProgress;  
         }
         return currKeyResult;
       })
 
-      updateEachOkrWithGivenKeyResultList(updatedKeyResultList,keyResult.objective_id);
+      updateEachOkrWithGivenKeyResultList(updatedKeyResultList,keyResult.objectiveId);
 
     } catch (error : any) {
       alert(error.message)
@@ -183,7 +188,7 @@ const KeyResultList = ({
                 Description: {keyResult.description}
               </div>
               <div className="text-white font-bold">
-                Progress: {keyResult.progress}%
+                Progress: {keyResult.currentProgress}%
               </div>
             </div>
           </div>

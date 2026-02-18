@@ -14,7 +14,7 @@ type KeyResultContextDefaultType = {
 
 export const KeyResultListContext = createContext<KeyResultContextDefaultType>({
   keyResultsList: [],
-  keyResult: { description: "", progress: 0, isCompleted: false, id: "" ,objective_id:"" },
+  keyResult: { description: "", currentProgress: 0,targetProgress : 0,metric:"", isCompleted: false, id: "" ,objectiveId:"" },
   handleKeyResultAddition: () => {},
   updateKeyResultList : () => {},
   deleteKeyResultInList : () => {},
@@ -28,13 +28,15 @@ const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
     description: "",
     id: "",
     isCompleted: false,
-    progress: 0,
-    objective_id:""
+    currentProgress: 0,
+    targetProgress: 0,
+    metric:"",
+    objectiveId:""
   });
 
 
   const handleKeyResultAddition = (updatedKeyResult: KeyResult): void => {
-    if (!updatedKeyResult.progress) {
+    if (!updatedKeyResult.currentProgress) {
       alert("Please Enter progress");
       return;
     }
@@ -43,7 +45,7 @@ const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
       return;
     }
 
-    if (!(updatedKeyResult.progress >= 0 && updatedKeyResult.progress <= 100)) {
+    if (!(updatedKeyResult.currentProgress >= 0 && updatedKeyResult.currentProgress <= 100)) {
       alert("Please Enter progress between 0 and 100 percentage");
       return;
     }
@@ -68,8 +70,10 @@ const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
       description: "",
       id: "",
       isCompleted: false,
-      progress: 0,
-      objective_id : ""
+      currentProgress: 0,
+      targetProgress: 0,
+      metric:"",
+      objectiveId:""
     });
   };
 
