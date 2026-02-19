@@ -187,8 +187,9 @@ const KeyResultList = ({
               <div className="text-white font-bold">
                 Description: {keyResult.description}
               </div>
-              <div className="text-white font-bold">
-                Progress: {keyResult.currentProgress}%
+              <div className="text-white font-bold flex items-center justify-start w-full gap-6">
+                <div>{keyResult.currentProgress} / {keyResult.targetProgress}</div>
+                <div> Metric : {keyResult.metric}</div>
               </div>
             </div>
           </div>

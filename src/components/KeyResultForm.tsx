@@ -20,8 +20,8 @@ const KeyResultForm = ({okrId} : {okrId : string}) => {
   async function handleAddKeyResult() {
       try{
           let newCurrKeyResult;
-          if(currKeyResult.id) newCurrKeyResult = await axios.put(`http://localhost:3002/objective/${okrId}/keyResult/${currKeyResult.id}`,{currentProgress:currKeyResult.currentProgress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted,targetProgress:100,metric:"%"});
-          else newCurrKeyResult = await axios.post(`http://localhost:3002/objective/${okrId}/keyResult`,{currentProgress:currKeyResult.currentProgress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted,targetProgress:100,metric:"%"});
+          if(currKeyResult.id) newCurrKeyResult = await axios.put(`http://localhost:3002/objective/${okrId}/keyResult/${currKeyResult.id}`,{currentProgress:currKeyResult.currentProgress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted,targetProgress:currKeyResult.targetProgress,metric:currKeyResult.metric});
+          else newCurrKeyResult = await axios.post(`http://localhost:3002/objective/${okrId}/keyResult`,{currentProgress:currKeyResult.currentProgress,description:currKeyResult.description,isCompleted:currKeyResult.isCompleted,targetProgress:currKeyResult.targetProgress,metric:currKeyResult.metric});
           handleKeyResultAddition(newCurrKeyResult.data);
 
           let updatedKeyResultsList;
@@ -59,13 +59,35 @@ const KeyResultForm = ({okrId} : {okrId : string}) => {
 
       />
 
+      <label className="text-sm font-bold" htmlFor="Cprogress">Current Progress</label>
       <input
         type="number"
-        name="progress"
-        placeholder="Progress (%)"
+        name="Cprogress"
+        id="Cprogress"
+        placeholder="Current Progress (%)"
         className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
         value={currKeyResult.currentProgress}
         onChange={(e) => setCurrKeyResult({...currKeyResult,currentProgress:Number(e.target.value)})}
+      />
+      
+      <label className="text-sm font-bold" htmlFor="Tprogress">Target</label>
+      <input
+        type="number"
+        name="Tprogress"
+        id="Tprogress"
+        placeholder="Target Progress (%)"
+        className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
+        value={currKeyResult.targetProgress}
+        onChange={(e) => setCurrKeyResult({...currKeyResult,targetProgress:Number(e.target.value)})}
+      />
+
+      <input
+        type="text"
+        name="metric"
+        placeholder="Metric"
+        className="w-full placeholder:text-xl  h-12 rounded-xl bg-black-30 border border-gray-300/30 px-4 placeholder:text-slate-300 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white  transition-all"
+        value={currKeyResult.metric}
+        onChange={(e) => setCurrKeyResult({...currKeyResult,metric:e.target.value})}
       />
 
       <button

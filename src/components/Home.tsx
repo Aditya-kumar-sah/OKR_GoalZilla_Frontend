@@ -4,6 +4,7 @@ import Header from "./Header.tsx";
 import KeyResultListProvider from "../context/KeyResultListProvider.tsx";
 import axios from "axios";
 import {OkrListContext} from "../context/OkrProvider.tsx";
+import AiGeneratedOkr from "./AiGeneratedOkr.tsx";
 
 const Home = () => {
   const {addOkrList} = useContext(OkrListContext)
@@ -26,6 +27,7 @@ const Home = () => {
         <div className="w-full">
           <Header />
         </div>
+        
         <div className="w-full p-4">
           <OkrList/>
         </div>

@@ -37,16 +37,24 @@ const KeyResultListProvider = ({ children }: { children: ReactElement }) => {
 
   const handleKeyResultAddition = (updatedKeyResult: KeyResult): void => {
     if (!updatedKeyResult.currentProgress) {
-      alert("Please Enter progress");
+      alert("Please Enter current progress");
+      return;
+    }
+    if (!updatedKeyResult.targetProgress) {
+      alert("Please Enter targetprogress");
       return;
     }
     if (!updatedKeyResult.description) {
       alert("Please Enter description");
       return;
     }
+    if (!updatedKeyResult.metric) {
+      alert("Please Enter metric");
+      return;
+    }
 
-    if (!(updatedKeyResult.currentProgress >= 0 && updatedKeyResult.currentProgress <= 100)) {
-      alert("Please Enter progress between 0 and 100 percentage");
+    if (!(updatedKeyResult.currentProgress >= 0 && updatedKeyResult.currentProgress <= updatedKeyResult.targetProgress)) {
+      alert("Please Enter currentProgress less than or equal to targetProgress and greater than or equal to 0");
       return;
     }
 

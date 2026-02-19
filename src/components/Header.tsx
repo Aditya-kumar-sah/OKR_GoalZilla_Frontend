@@ -3,6 +3,7 @@ import OkrForm from "./OkrForm.tsx";
 import {useContext, useState} from "react"
 import axios from "axios";
 import {OkrListContext} from "../context/OkrProvider.tsx";
+import AiGeneratedOkr from "./AiGeneratedOkr.tsx";
 
 const Header = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -36,6 +37,9 @@ const Header = () => {
         GoalZilla
       </div>
       <div>
+        <AiGeneratedOkr />
+      </div>
+      <div>
         <Modal
           isOpen={isFormOpen}
           handleOpenOkr={handleOpenAddOkr}
@@ -48,6 +52,7 @@ const Header = () => {
           />
         </Modal>
       </div>
+
     </div>
   );
 };
