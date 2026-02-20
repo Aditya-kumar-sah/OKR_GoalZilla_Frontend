@@ -15,6 +15,7 @@ const OkrForm = ({
     okrId: string,
   ) => void;
 }) => {
+  
   const [objective, setObjective] = useState(okr.title);
   const { updateKeyResultList } = useContext(KeyResultListContext);
 
@@ -25,7 +26,7 @@ const OkrForm = ({
   return (
     <div className="w-[70%] flex flex-col items-center justify-center bg-black/50 p-6 rounded-lg border border-gray-100/20 gap-6">
       <h2 className="w-full text-center text-2xl text-white/40 font-bold">
-        OKR Form
+        OKR Form {okr.title}
       </h2>
 
       <form

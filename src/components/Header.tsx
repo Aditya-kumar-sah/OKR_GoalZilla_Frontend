@@ -34,7 +34,7 @@ const Header = () => {
   return (
     <div className="w-full py-4 px-2 sticky top-0 right-0 left-0 bg-black/50 flex items-center justify-between">
       <div className="text-2xl cursor-pointer font-bold text-gray-200">
-        GoalZilla
+        OKR Tracker
       </div>
       <div>
         <AiGeneratedOkr />

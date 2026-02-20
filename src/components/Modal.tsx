@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { X } from "lucide-react";
+import type { OkrType } from "../types/okr-types";
 interface ModalProps {
   children: ReactNode;
   isOpen: boolean;
